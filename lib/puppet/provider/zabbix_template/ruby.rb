@@ -24,8 +24,10 @@ Puppet::Type.type(:zabbix_template).provide(:ruby, parent: Puppet::Provider::Zab
           deleteMissing: (@resource[:delete_missing_graphs].nil? ? false : @resource[:delete_missing_graphs]),
           updateExisting: true
         },
-        groups: {
-          createMissing: true
+        # groups parameter was renamed to template_groups on Zabbix 7.0
+        (@resource[:zabbix_version] =~ %r{7\.\d} ? :template_groups : :groups) => {
+          createMissing: true,
+          updateExisting: true
         },
         httptests: {
           createMissing: true,
