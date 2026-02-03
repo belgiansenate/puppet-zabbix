@@ -189,9 +189,12 @@ Puppet::Type.type(:zabbix_host).provide(:ruby, parent: Puppet::Provider::Zabbix)
     gids = get_groupids(hostgroups, @resource[:group_create])
     groups = transform_to_array_hash('groupid', gids)
 
-    zbx.hosts.create_or_update(
-      host: @resource[:hostname],
-      groups: groups
+    zbx.query(
+      method: 'host.update',
+      params: {
+        hostid: @property_hash[:id],
+        groups: groups
+      }
     )
   end
 
@@ -231,42 +234,56 @@ Puppet::Type.type(:zabbix_host).provide(:ruby, parent: Puppet::Provider::Zabbix)
   end
 
   def proxy=(string)
-    zbx.hosts.create_or_update(
-      host: @resource[:hostname],
-      proxy_hostid: zbx.proxies.get_id(host: string)
+    zbx.query(
+      method: 'host.update',
+      params: {
+        hostid: @property_hash[:id],
+        proxy_hostid: zbx.proxies.get_id(host: string)
+      }
     )
   end
 
   def tls_connect=(int)
     @property_hash[:tls_connect] = int
-    zbx.hosts.create_or_update(
-      host: @resource[:hostname],
-      tls_connect: @property_hash[:tls_connect].nil? ? 1 : @property_hash[:tls_connect]
+    zbx.query(
+      method: 'host.update',
+      params: {
+        hostid: @property_hash[:id],
+        tls_connect: @property_hash[:tls_connect].nil? ? 1 : @property_hash[:tls_connect]
+      }
     )
   end
 
   def tls_accept=(int)
     @property_hash[:tls_accept] = int
-
-    zbx.hosts.create_or_update(
-      host: @resource[:hostname],
-      tls_accept: @property_hash[:tls_accept].nil? ? 1 : @property_hash[:tls_accept]
+    zbx.query(
+      method: 'host.update',
+      params: {
+        hostid: @property_hash[:id],
+        tls_accept: @property_hash[:tls_accept].nil? ? 1 : @property_hash[:tls_accept]
+      }
     )
   end
 
   def tls_issuer=(string)
     @property_hash[:tls_issuer] = string
-    zbx.hosts.create_or_update(
-      host: @resource[:hostname],
-      tls_issuer: @property_hash[:tls_issuer].nil? ? '' : @property_hash[:tls_issuer]
+    zbx.query(
+      method: 'host.update',
+      params: {
+        hostid: @property_hash[:id],
+        tls_issuer: @property_hash[:tls_issuer].nil? ? '' : @property_hash[:tls_issuer]
+      }
     )
   end
 
   def tls_subject=(string)
     @property_hash[:tls_subject] = string
-    zbx.hosts.create_or_update(
-      host: @resource[:hostname],
-      tls_subject: @property_hash[:tls_subject].nil? ? '' : @property_hash[:tls_subject]
+    zbx.query(
+      method: 'host.update',
+      params: {
+        hostid: @property_hash[:id],
+        tls_subject: @property_hash[:tls_subject].nil? ? '' : @property_hash[:tls_subject]
+      }
     )
   end
 end
